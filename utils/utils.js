@@ -45,7 +45,7 @@ const getProductPrice = async (url) => {
         return cleanedPrice;
     } catch (error) {
         console.error('Price scraping error:', error.message);
-        throw error;
+        // throw error;
     } finally {
         await browser.close();
     }

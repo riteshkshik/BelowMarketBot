@@ -1,0 +1,6 @@
+services:
+  - type: worker
+    name: price-tracker-bot
+    env: node
+    buildCommand: npm install
+    startCommand: node server.js

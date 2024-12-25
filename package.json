@@ -16,9 +16,11 @@
     "mongoose": "^8.9.1",
     "node-cron": "^3.0.3",
     "node-telegram-bot-api": "^0.66.0",
-    "puppeteer": "^23.10.4"
+    "chrome-aws-lambda": "^6",
+    "express": "^4.18.1",
+    "puppeteer-core": "^6"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "puppeteer": "^16.2.0"
   }
 }

@@ -10,25 +10,29 @@ const extractUrls = (text) => {
 };
 
 const getProductPrice = async (url) => {
-  const isProduction = process.env.NODE_ENV === "production";
+  let chrome = {};
+  let puppeteer;
 
-  const options = {
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage",
-      "--disable-accelerated-2d-canvas",
-      "--no-first-run",
-      "--no-zygote",
-      "--disable-gpu",
-    ],
-    headless: "new",
-    executablePath: isProduction
-      ? "/usr/bin/google-chrome"
-      : "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", // Adjust this path for your Windows Chrome installation
-  };
+  if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
+    chrome = require("chrome-aws-lambda");
+    puppeteer = require("puppeteer-core");
+  } else {
+    puppeteer = require("puppeteer");
+  }
 
-  const browser = await puppeteer.launch(options);
+  let options = {};
+
+  if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
+    options = {
+      args: [...chrome.args, "--hide-scrollbars", "--disable-web-security"],
+      defaultViewport: chrome.defaultViewport,
+      executablePath: await chrome.executablePath,
+      headless: true,
+      ignoreHTTPSErrors: true,
+    };
+  }
+
+  let browser = await puppeteer.launch(options);
 
   try {
     const page = await browser.newPage();
@@ -56,19 +60,16 @@ const getProductPrice = async (url) => {
 
     const price = await page.$eval(priceSelector, (el) => el.innerText.trim());
     const cleanedPrice = parseFloat(price.replace(/[^0-9.]/g, ""));
-
+    console.log("cleanedPrice in utils -> ", cleanedPrice);
     return cleanedPrice;
   } catch (error) {
     console.error("Price scraping error:", error.message);
-    // throw error;
   } finally {
     await browser.close();
   }
 };
 
-getProductPrice("https://amzn.in/d/d9ZOo96");
-
 module.exports = {
   extractUrls,
-  getProductPrice,
+  getProductPrice
 };

@@ -1,6 +1,7 @@
 const TelegramBot = require("node-telegram-bot-api");
 const Request = require("../mongo/mongoSchema");
 const { extractUrls, getProductPrice } = require("../utils/utils");
+let botInstance;
 
 const userStates = {};
 
@@ -13,8 +14,9 @@ function isValidUrl(url) {
   }
 }
 
-function initializePriceTrackerBot(token) {
+async function initializePriceTrackerBot(token) {
   const bot = new TelegramBot(token, { polling: true });
+  botInstance = bot;
 
   // Start command handler
   bot.onText(/\/start/, (msg) => {
@@ -51,7 +53,6 @@ function initializePriceTrackerBot(token) {
       case "welcome":
         // Validate and extract URL
         const extractedUrl = extractUrls(text)[0];
-        console.log("extractedUrl on line 54 -> ", extractedUrl);
         if (isValidUrl(extractedUrl)) {
           try {
             // Attempt to get current product price
@@ -135,4 +136,11 @@ function initializePriceTrackerBot(token) {
   return bot;
 }
 
-module.exports = initializePriceTrackerBot;
+const getBotInstance = () => {
+  if (!botInstance) {
+    throw new Error("Bot instance not initialized");
+  }
+  return botInstance;
+};
+
+module.exports = {initializePriceTrackerBot, getBotInstance};

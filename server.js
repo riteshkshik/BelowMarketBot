@@ -28,8 +28,8 @@ app.listen(5000, () => {
   startApp();
 });
 
-app.get("/test", (req, res) => {
-  res.send("Server is working fine!");
+app.get("/", (req, res) => {
+  res.send(`Server is working fine! -- ${new Date().toISOString()}`);
 });
 
 

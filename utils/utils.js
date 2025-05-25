@@ -60,7 +60,7 @@ const getProductPrice = async (url) => {
 
     const price = await page.$eval(priceSelector, (el) => el.innerText.trim());
     const cleanedPrice = parseFloat(price.replace(/[^0-9.]/g, ""));
-    console.log("cleanedPrice in utils -> ", cleanedPrice);
+    console.log("current price -> ", cleanedPrice, url);
     return cleanedPrice;
   } catch (error) {
     console.error("Price scraping error:", error.message);

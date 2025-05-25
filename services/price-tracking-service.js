@@ -36,7 +36,7 @@ async function startPriceCheckingJob() {
 // Cron job to run every hour
 function setupPriceCheckingCron() {
   console.log("Price Tracking service has been enabled!");
-  cron.schedule("*/15 * * * *", () => {
+  cron.schedule("0 * * * *", () => {
     startPriceCheckingJob();
   });
   startPriceCheckingJob();
